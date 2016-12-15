@@ -1,51 +1,84 @@
-angular.module('flapperNews')
-    .factory('auth', ['$http', '$window', function($http, $window) {
-        var auth = {};
+(function () {
+    'use strict';
 
-        auth.saveToken = function(token) {
-            $window.localStorage['flapper-news-token'] = token;
+    angular
+        .module('flapperNews')
+        .factory('auth', authService);
+
+    authService.$inject = [
+        '$http',
+        '$window',
+        '$state'
+    ];
+
+    function authService($http, $window, $state) {
+
+        return {
+            getToken: getToken,
+            getUserName: getUserName,
+            isLoggedIn: isLoggedIn,
+            login: login,
+            logOut: logOut,
+            register: register,
+            saveToken: saveToken
         };
 
-        auth.getToken = function() {
-            return $window.localStorage['flapper-news-token'];
-        };
+        function saveToken(token) {
+            $window.localStorage.flapperNewsToken = token;
+        }
 
-        auth.isLoggedIn = function() {
-            var token = auth.getToken();
+        function getToken() {
+            return $window.localStorage.flapperNewsToken;
+        }
 
-            if(token) {
-                var payload = JSON.parse($window.atob(token.split('.')[1]));
+        function isLoggedIn() {
+
+            var token = getToken();
+            var payload;
+
+            if (token) {
+
+                payload = JSON.parse($window.atob(token.split('.')[1]));
 
                 return payload.exp > Date.now() / 1000;
-            } else {
-                return false;
             }
-        };
 
-        auth.currentUser = function() {
-            if(auth.isLoggedIn()) {
-                var token = auth.getToken();
-                var payload = JSON.parse($window.atob(token.split('.')[1]));
+            return false;
+        }
 
-                return payload.username;
+        function getUserName() {
+
+            var token;
+            var payload;
+            var userName = '';
+
+            if (isLoggedIn()) {
+
+                token = getToken();
+                payload = JSON.parse($window.atob(token.split('.')[1]));
+
+                userName = payload.username;
             }
-        };
 
-        auth.register = function(user) {
-            return $http.post('/register', user).success(function(data){
-                auth.saveToken(data.token);
+            return userName;
+        }
+
+        function register(user) {
+            return $http.post('/register', user).success(function registerSuccess(data) {
+                saveToken(data.token);
             });
-        };
+        }
 
-        auth.logIn = function(user) {
-            return $http.post('/login', user).success(function(data) {
-                auth.saveToken(data.token);
+        function login(user) {
+            return $http.post('/login', user).success(function loginSuccess(data) {
+                saveToken(data.token);
             });
-        };
+        }
 
-        auth.logOut = function() {
-            $window.localStorage.removeItem('flapper-news-token');
-        };
+        function logOut() {
+            $window.localStorage.removeItem('flapperNewsToken');
+            $state.go('login');
+        }
+    }
 
-        return auth;
-}]);
+})();
