@@ -3,14 +3,14 @@
 
     angular
         .module('flapperNews')
-        .factory('comments', comments);
+        .factory('commentsService', commentsService);
 
-    comments.$inject = [
+    commentsService.$inject = [
         '$http',
         'auth'
     ];
 
-    function comments($http, auth) {
+    function commentsService($http, auth) {
 
         return {
             add: add,

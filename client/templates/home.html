@@ -1,0 +1,25 @@
+<blockquote ng-repeat="post in vm.posts | orderBy: '-upvotes'">
+    <p>
+        <span class="glyphicon glyphicon-thumbs-up" ng-click="vm.incrementUpvotes(post)"></span>
+        {{post.upvotes}} &nbsp;
+        <strong>
+            <a ng-show="post.link" href="{{post.link}}" target="_blank">{{post.title}}</a>
+            <span ng-hide="post.link">{{post.title}}</span>
+        </strong>
+        <footer>
+            <span ng-show="post.author">posted by <strong>{{post.author}}</strong></span> |
+            <a href="#/posts/{{post._id}}">Comments</a>
+            <span ng-click="vm.delete(post._id);">delete</span>
+        </footer>
+    </p>
+</blockquote>
+
+<form class="form-group" name="addPostForm" ng-submit="addPostForm.$valid && vm.addPost()" novalidate>
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Title" ng-model="vm.title" required>
+    </div>
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Link" ng-model="vm.link">
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>

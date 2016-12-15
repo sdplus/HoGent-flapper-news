@@ -1,0 +1,13 @@
+<div ng-show="vm.error" class="alert alert-danger" role="alert">
+    <span>{{ vm.error.message }}</span>
+</div>
+<form name="registerForm" ng-submit="registerForm.$valid && vm.register()" class="form-group" novalidate>
+    <h3>Register</h3>
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Username" ng-model="vm.user.username" required></input>
+    </div>
+    <div class="form-group">
+        <input type="password" class="form-control" placeholder="Password" ng-model="vm.user.password" required></input>
+    </div>
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>

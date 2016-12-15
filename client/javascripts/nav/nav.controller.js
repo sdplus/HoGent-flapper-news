@@ -3,16 +3,16 @@
 
     angular
         .module('flapperNews')
-        .controller('NavCtrl', NavCtrl);
+        .controller('NavController', NavController);
 
-    NavCtrl.$inject = [
+    NavController.$inject = [
         'auth'
     ];
 
-    function NavCtrl(auth) {
+    function NavController(auth) {
 
         var vm = this;
-        vm.title = 'NavCtrl';
+        vm.title = 'NavController';
 
         vm.isLoggedIn = auth.isLoggedIn;
         vm.getUserName = auth.getUserName;

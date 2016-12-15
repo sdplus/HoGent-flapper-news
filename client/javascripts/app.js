@@ -2,7 +2,9 @@
     'use strict';
 
     angular
-        .module('flapperNews', ['ui.router'])
+        .module('flapperNews', [
+            'ui.router'
+        ])
         .config(stateURLConfig);
 
     stateURLConfig.$inject = [
@@ -11,45 +13,33 @@
     ];
 
     function stateURLConfig($stateProvider, $urlRouterProvider) {
+
         $stateProvider
             .state('home', {
                 url: '/',
                 templateUrl: '/templates/home.html',
-                controller: 'MainCtrl',
+                controller: 'MainController',
                 controllerAs: 'vm',
-                resolve: {
-                    postPromise: ['posts', function (posts) {
-                        return posts.getAll();
-                    }]
-                },
                 onEnter: onAppEnterNoAuth
             })
-
             .state('posts', {
                 url: '/posts/{id}',
                 templateUrl: '/templates/posts.html',
-                controller: 'PostsCtrl',
+                controller: 'PostsController',
                 controllerAs: 'vm',
-                resolve: {
-                    post: ['$stateParams', 'posts', function ($stateParams, posts) {
-                        return posts.get($stateParams.id);
-                    }]
-                },
                 onEnter: onAppEnterNoAuth
             })
-
             .state('login', {
                 url: '/login',
                 templateUrl: '/templates/login.html',
-                controller: 'AuthCtrl',
+                controller: 'AuthController',
                 controllerAs: 'vm',
                 onEnter: onAppEnterAuth
             })
-
             .state('register', {
                 url: '/register',
                 templateUrl: '/templates/register.html',
-                controller: 'AuthCtrl',
+                controller: 'AuthController',
                 controllerAs: 'vm',
                 onEnter: onAppEnterAuth
             });
@@ -80,15 +70,3 @@
     }
 
 })();
-
-
-
-
-
-
-
-
-
-
-
-
