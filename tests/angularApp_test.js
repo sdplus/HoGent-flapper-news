@@ -66,7 +66,7 @@ describe('', function(){
       $scope.name = data.name;
     });
 
-    $http.get('/posts/34kd34').success(function(data, satus, headers, config) {
+    $http.get('/posts.js/34kd34').success(function(data, satus, headers, config) {
       //$scope.postid = data.id;;
       $scope.post = data.post
     })
