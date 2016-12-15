@@ -28,7 +28,7 @@ app.config([
 
       $stateProvider.state('login', {
         url: '/login',
-        templateUrl: 'login.html',
+        templateUrl: '/login.html',
         controller: 'AuthCtrl',
         onEnter: ['$state', 'auth', function($state, auth) {
           if(auth.isLoggedIn()) {
@@ -37,9 +37,9 @@ app.config([
         }]
       });
 
-      $stateProvider('register', {
+      $stateProvider.state('register', {
         url: '/register',
-        templateUrl: 'register.html',
+        templateUrl: '/register.html',
         controller: 'AuthCtrl',
         onEnter: ['$state', 'auth', function($state, auth) {
           if(auth.isLoggedIn()){
@@ -101,7 +101,7 @@ app.factory('auth', ['$http', '$window', function($http, $window) {
   };
 
   return auth;
-}])
+}]);
 
 app.factory('posts', ['$http', 'auth', function($http, auth){
   var o = {
@@ -123,7 +123,7 @@ app.factory('posts', ['$http', 'auth', function($http, auth){
   };
 
   o.upvote = function(post) {
-    return $http.put('/posts/' + post._id + '/upvote'), null, {
+    return $http.put('/posts/' + post._id + '/upvote', null, {
       headers: {Authorization: 'Bearer ' + auth.getToken()}
     }).success(function(data) {
         post.upvotes += 1;
@@ -165,7 +165,7 @@ app.controller('MainCtrl', [
       if(!$scope.title || $scope.title === ''){return;}
       posts.create({
         title: $scope.title,
-        link: $scope.link,
+        link: $scope.link
       });
     /*  vervangen door posts.create na o.create in service zodat posts opgeslagen worden to the server
     $scope.posts.push({
@@ -180,7 +180,7 @@ app.controller('MainCtrl', [
       */
       $scope.title = '';
       $scope.link = '';
-    }
+    };
 
     $scope.incrementUpvotes = function(post){
       posts.upvote(post);
@@ -204,7 +204,7 @@ app.controller('PostsCtrl', [
       if ($scope.body === ''){return;}
       posts.addComment(post._id, {
         body: $scope.body,
-        author: 'user',
+        author: 'user'
       }).success(function(comment) {
         $scope.post.comments.push(comment);
       });
@@ -230,7 +230,7 @@ app.controller('AuthCtrl', [
   '$scope',
   '$state',
   'auth',
-  function($scope, $state, $auth) {
+  function($scope, $state, auth) {
     $scope.user = {};
 
     $scope.register = function() {
@@ -242,13 +242,14 @@ app.controller('AuthCtrl', [
     };
 
     $scope.logIn = function() {
+      console.log($scope.user);
       auth.logIn($scope.user).error(function(error){
         $scope.error = error;
       }).then(function() {
         $state.go('home');
       });
     };
-  };
+  }
 ]);
 
 app.controller('NavCtrl', [
