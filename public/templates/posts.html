@@ -1,23 +1,23 @@
 <div class="page-header">
     <h3>
-        <a ng-show="post.link" href="{{post.link}}">
-            {{post.title}}
+        <a ng-show="vm.post.link" href="{{vm.post.link}}">
+            {{vm.post.title}}
         </a>
-        <span ng-hide="post.link">
-            {{post.title}}
+        <span ng-hide="vm.post.link">
+            {{vm.post.title}}
           </span>
     </h3>
 </div>
 
-<div ng-repeat="comment in post.comments | orderBy: '-upvotes'">
-    <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(comment)"></span>
+<div ng-repeat="comment in vm.post.comments | orderBy: '-upvotes'">
+    <span class="glyphicon glyphicon-thumbs-up" ng-click="vm.incrementUpvotes(comment)"></span>
     {{comment.upvotes}} - by {{comment.author}}
     <span style="font-size: 20px; margin-left: 10px;">
           {{comment.body}}
         </span>
 </div>
 
-<form ng-submit="addComment()" ng-show="isLoggedIn()" style="margin-top:30px;">
+<form ng-submit="vm.addComment()" ng-show="vm.isLoggedIn()" style="margin-top:30px;">
     <h3>Add a new comment</h3>
 
     <div class="form-group">
@@ -26,6 +26,6 @@
     <button type="submit" class="btn btn-primary">Post</button>
 </form>
 
-<div ng-hide="isLoggedIn()">
+<div ng-hide="vm.isLoggedIn()">
     <h3>You need to <a href="/#/login">Log In</a> or <a href="/#/register">Register</a> before you can comment.</h3>
 </div>

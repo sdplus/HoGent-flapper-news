@@ -9,7 +9,7 @@ describe("flapper news router", function() {
     });
   });
 
-  it("check posts.js", function(done) {
+  it("check posts.javascripts", function(done) {
     request.get(base_url + "posts", function(error, response, body) {
         expect(response.statusCode).toBe(200);
         console.log(body);

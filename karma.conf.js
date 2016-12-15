@@ -17,8 +17,8 @@ module.exports = function(config) {
     files: [
       'lib/angular.js',
       'lib/angular-mocks.js',
-      'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.js',
-      'public/js/angularApp.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.10/angular-ui-router.javascripts',
+      'public/javascripts/angularApp.js',
       'tests/angularApp_test.js'
     ],
 

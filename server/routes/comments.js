@@ -34,7 +34,7 @@ router.param('comment', function(req, res, next, id) {
     });
 });
 
-router.post('/posts.js/:post/comments', auth, function(req, res, next) {
+router.post('/posts.javascripts/:post/comments', auth, function(req, res, next) {
         var comment = new Comment(req.body);
         comment.post = req.post;
         comment.author = req.payload.username;
@@ -52,7 +52,7 @@ router.post('/posts.js/:post/comments', auth, function(req, res, next) {
     }
 );
 
-router.put('/posts.js/:post/comments/:comment/upvote', auth, function(req, res, next) {
+router.put('/posts.javascripts/:post/comments/:comment/upvote', auth, function(req, res, next) {
     req.comment.upvote(function(err, comment) {
         if(err) { return next(err); }
 
