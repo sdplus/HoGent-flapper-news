@@ -1,50 +1,69 @@
-angular.module('flapperNews')
-    .factory('posts', ['$http', 'auth', function($http, auth){
-        var o = {
-            posts: []
+a(function () {
+    'use strict';
+
+    angular
+        .module('flapperNews')
+        .factory('posts', posts);
+
+    posts.$inject = [
+        '$http',
+        'auth'
+    ];
+
+    function posts($http, auth) {
+        var postsResponse = {
+            getAll: getAll,
+            create: create,
+            upvote: upvote,
+            get: get,
+            posts: [],
+            delete: deletePost
         };
 
-        o.getAll = function() {
-            return $http.get('/posts').success(function(data) {
+        o.getAll = function () {
+            return $http.get('/posts').success(function (data) {
                 angular.copy(data, o.posts);
             });
         };
 
-        o.create = function(post) {
+        function create() {
             return $http.post('/posts', post, {
-                headers: {Authorization: 'Bearer ' + auth.getToken() }
-            }).success(function(data) {
-                o.posts.push(data);
-            });
-        };
+                headers: {Authorization: 'Bearer ' + auth.getToken()}
+            })
+        }
 
-        o.upvote = function(post) {
+        function upvote(post) {
             return $http.put('/posts/' + post._id + '/upvote', null, {
                 headers: {Authorization: 'Bearer ' + auth.getToken()}
-            }).success(function(data) {
-                post.upvotes += 1;
-            });
-        };
+            })
+        }
 
-        o.get = function(id) {
-            return $http.get('/posts/' + id).then(function(res) {
+        function get(id) {
+            return $http.get('/posts/' + id).then(function (res) {
                 return res.data;
             });
-        };
+        }
 
-        o.addComment = function(id, comment) {
+        function addComment(id, comment) {
             return $http.post('/posts/' + id + '/comments', comment, {
                 headers: {Authorization: 'Bearer ' + auth.getToken()}
             });
-        };
+        }
 
-        o.upvoteComment = function(post, comment) {
+        function upvote(post, comment) {
             return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/upvote', null, {
                 headers: {Authorization: 'Bearer ' + auth.getToken()}
-            }).success(function(data){
-                comment.upvotes += 1;
-            });
-        };
+            })
+        }
 
-        return o;
-}]);
+        function deletePost(id) {
+            return $http.delete('/posts/' + id, {
+                headers: {
+                    Authorization: 'Bearer ' + auth.getToken()
+                }
+            });
+        }
+
+        return postsResponse;
+    }
+})();

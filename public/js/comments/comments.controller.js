@@ -1,37 +1,70 @@
-angular.module('flapperNews')
-    .controller('PostsCtrl', [
-        '$scope',
-        //'$stateParams',
+(function () {
+    'use strict';
+
+    angular
+        .module('flapperNews')
+        .controller('PostsCtrl', PostCtrl);
+
+    PostCtrl.$inject = [
+        '$stateParams',
         'posts',
-        'post',
-        'auth',
-        function($scope, /*$stateParams,*/ posts, post, auth){
-            //$scope.post = posts.posts[$stateParams.id];
-            $scope.post = post;
-            $scope.isLoggedIn = auth.isLoggedIn;
-
-            $scope.addComment = function(){
-                if ($scope.body === ''){return;}
-                posts.addComment(post._id, {
-                    body: $scope.body,
-                    author: 'user'
-                }).success(function(comment) {
-                    $scope.post.comments.push(comment);
-                });
+        'comments',
+        'auth'
+    ]
 
 
-                /* vervangen door posts.addComment na het toevoegen in de service
-                 $scope.post.comments.push({
-                 body: $scope.body,
-                 author: 'user',
-                 upvotes: 0
-                 });
-                 */
-                $scope.body = '';
-            };
+    function PostCtrl($scope, posts, comments, auth) {
 
-            $scope.incrementUpvotes = function(comment){
-                posts.upvoteComment(post, comment);
-            };
+
+        var vm = this;
+        vm.post = {};
+        vm.addComment = addComment;
+        vm.upvote = upvote;
+        vm.delete = deleteComment;
+
+        init();
+
+        function init() {
+            return getPost();
         }
-]);
+
+        function getPost() {
+            return posts.get($stateParams.id).then(function (data) {
+                vm.post = data;
+                return vm.post;
+            }, error);
+
+            function addComment() {
+
+                comments.add(vm.post._id, {
+                    body: vm.body
+                }).then(function (res) {
+                    vm.post.comments.push(res.data);
+                    vm.body = '';
+                    vm.hideModal();
+                }, error);
+            }
+
+            function upvote(comment) {
+                comments.upvote(comment).then(function (res) {
+                    comment.upvotes = res.data.upvotes;
+                }, error);
+            }
+
+            function deleteComment(id) {
+                comments.delete(id).then(function (res) {
+                    if (res.data.success) {
+                        init();
+                    } else {
+                        error();
+                    }
+                }, error);
+            }
+
+            function error() {
+                alert('Something went wrong');
+            }
+        }
+    }
+
+})();

@@ -1,35 +1,65 @@
-angular.module('flapperNews')
-    .controller('MainCtrl', [
-        '$scope',
+(function () {
+    'use strict';
+
+    angular
+        .module('flapperNews')
+        .controller('MainCtrl', MainCtrl);
+
+    MainCtrl.$inject = [
         'posts',
-        'auth',
-        function($scope, posts, auth){
-            $scope.posts = posts.posts;
-            $scope.isLoggedIn = auth.isLoggedIn;
+        'auth'
+    ];
 
-            $scope.addPost = function(){
-                if(!$scope.title || $scope.title === ''){return;}
-                posts.create({
-                    title: $scope.title,
-                    link: $scope.link
-                });
-                /*  vervangen door posts.create na o.create in service zodat posts opgeslagen worden to the server
-                 $scope.posts.push({
-                 title: $scope.title,
-                 link: $scope.link,
-                 upvotes: 0,
-                 comments: [
-                 {author: 'Joe', body: 'Cool post', upvotes: 0},
-                 {author: 'Bob', body: 'Great idea but everything is wrong!', upvotes: 0}
-                 ]
-                 });
-                 */
-                $scope.title = '';
-                $scope.link = '';
-            };
 
-            $scope.incrementUpvotes = function(post){
-                posts.upvote(post);
-            };
+    function MainCtrl(posts, auth) {
+
+        var vm = this;
+        vm.posts = [];
+        vm.addPost = addPost;
+        vm.incrementUpvotes = incrementUpvotes;
+        vm.delete = deletePost;
+
+        init();
+
+        function init() {
+            postsService
+                .getAll()
+                .then(function successCallback(serviceResponse) {
+                    vm.posts = serviceResponse.data;
+                }, processError);
         }
-]);
+
+        function addPost() {
+            posts.create({
+                title: vm.title,
+                link: vm.link
+            }).then(function (res) {
+                vm.posts.push(res.data);
+                vm.title = '';
+                vm.link = '';
+            }, error);
+        }
+
+        function incrementUpvotes(post) {
+            posts.upvote(post).then(function () {
+                post.upvotes++;
+            }, error);
+        }
+
+        function deletePost(id) {
+            posts.delete(id).then(function (res) {
+                if (res.data.success) {
+                    init();
+                } else {
+                    error;
+                }
+
+            }, error);
+        }
+
+        function error() {
+            alert('Something went wrong');
+        }
+    }
+
+})();
